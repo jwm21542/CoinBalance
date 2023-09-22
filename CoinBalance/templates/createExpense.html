@@ -1,0 +1,150 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Create New Expense
+{% endblock %}
+
+{% block content %}
+<div class="row" style = "margin-top: 30px;">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+<div class="card" style = "margin-top: 30px; padding: 50px;" >
+    <div class="card-header">
+      <h5 class="title">Create New Expense</h5>
+    </div>
+    <div class="card-body">
+      <form action = "/saveExpense/" method = "post" onsubmit = "return formCheck()">
+        {% csrf_token %}
+        <input type = "hidden" value = "{{ form_token }}" name = "form_token">
+        <input type = "hidden" value = "{{group.gnum}}" name = "gnum">
+        <div class="row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label>Expense Name</label>
+              <input type="text" class="form-control" name = "ename" placeholder="Enter Expense Name" autocomplete="off">
+            </div>
+          </div>
+        </div>
+        <div class = "row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label>Expense Description</label>
+              <textarea name = "edesc" class="form-control" placeholder="Enter Group Description" rows="3" style = "border: 1px solid #E3E3E3; border-radius: 30px;" autocomplete="off"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 pl-1">
+              <div class="form-group">
+                <label>Expense Total</label>
+                <input type="text" class="form-control" name = "expenseTotal" placeholder="Enter Expense Total" autocomplete="off">
+              </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 pl-1">
+              <div class="form-group">
+                <label>Paid By</label>
+                {% for member in members %}
+                <input type = "radio" name = "paidBy" value = "{{ member.name }}" onclick = "updateSplit()" autocomplete="off">{{ member.name }}
+                {% endfor %}
+              </div>
+            </div>
+        </div>
+          <div class="row">
+            <div class="col-md-12 pl-1">
+              <div class="form-group">
+                <label>Split Bill (Currency : {{group.currency}})</label>
+                {% for member in members %}
+                <input type = "hidden" name = "splitPayer[]" autocomplete = "off" value = "{{member.mnum}}">
+                <p><span style = "width: 60px;">{{member.name }} : </span><input class = "form-control" type = "text" name = "splitAmount[]" autocomplete = "off" id = "{{member.name}}"></p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        <div style = "text-align: right">
+        <button type = "submit" class = "btn btn-primary">Add Expense</button>
+      </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  </div>
+  {% endblock %}
+
+{% block scriptBlock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(document).ready(function() {
+      $('li').removeClass('active');
+      $('#groups').addClass('active');
+    });
+    function formCheck(){
+      if($('input[name=ename]').val() == ""){
+        alert("Please enter a name for the expense.");
+        $('input[name=ename]').focus();
+        return false;
+      }
+      if($('textarea[name=edesc]').val() == ""){
+        alert("Please enter a description for the expense.");
+        $('input[name=edesc]').focus();
+        return false;
+      }
+      if($('input[name=expenseTotal]').val() == ""){
+        alert("Please enter the expense total amount.");
+        $('input[name=expenseTotal]').focus();
+        return false;
+      }
+      if(isNaN($('input[name=expenseTotal]').val()) == true){
+        alert("Please enter a valid numerical value.");
+        $('input[name=expenseTotal]').focus();
+        return false;
+      }
+      if(typeof $('input[name=paidBy]:checked').val() === "undefined"){
+        alert("Please select who the expense was paid by.");
+        return false;
+      }
+      
+      var total = 0;
+      var flag = "";
+      $('input[name=splitAmount]').each(function(){
+        if(isNaN($(this).val()) == true){
+          flag = "NaN";
+        } else if($(this).val() == ""){
+          flag = "blank";
+        } else { 
+          total += parseInt($(this).val());
+        }
+      });
+      if(total > $('input[name=expenseTotal]').val()){
+        alert("The total of the split amounts to more than the total expense.");
+        return false;
+      }
+      if(flag == "NaN"){
+        alert("Please enter a valid numerical value.");
+        return false;
+      } else if(flag == "blank") {
+        alert("Please enter the split amount");
+        return false;
+      }
+    } 
+    function updateSplit(){
+      var names = [];
+      var paidBy = $('input[name=paidBy]:checked').val();
+
+      $('input[name=paidBy]').each(function(){
+        name = $(this).val();
+        names.push(name);
+        if(name == paidBy){
+          $('input[id=' + name + ']').attr('readonly', true);
+          $('input[id=' + name + ']').val("0");
+        } else {
+          $('input[id=' + name + ']').attr('readonly', false);
+          $('input[id=' + name + ']').val("0");
+        }
+      });
+      
+    }
+</script>
+{% endblock %}

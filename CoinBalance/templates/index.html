@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CoinBalance | Login</title>
+<link rel="icon" type="image/png" href="../static/assets/img/favicon.png">
+<link type="text/css" rel = "stylesheet" href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'>
+<link type="text/css" rel = "stylesheet" href='https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css'>
+<link type="text/css" rel = "stylesheet" href = "../static/assets/css/style.css">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container col-lg-12" style = "height: 100%; align-content: center;">
+	<div class="screen">
+		<div class="screen__content">
+			<div style = "margin-top: 90px; margin-left: 40px; margin-bottom:20px;">
+				<img src = "../static/assets/img/logoCoin.png" style = "width: 20px; height: 25px;">
+				<p style = "font-size:28px; font-weight: bold; display:inline; color:#0f5e94">CoinBalance</p>
+			</div>
+			<form class="login" action = "{% url 'submit_form' %}" style = "padding-top: 0px;" method = "POST" onsubmit="return formCheck()">
+				{% csrf_token %}
+				<div class="login__field">
+					<i class="login__icon fas fa-user"></i>
+					<input type="text" name = "username" id = "un" class= "login__input" placeholder="User Name">
+				</div>
+				<div class="login__field">
+					<i class="login__icon fas fa-lock"></i>
+					<input type="password" name = "password" id = "pw" class="login__input" placeholder="Password">
+				</div>
+				{{ loginCheck}}
+				{% if loginCheck == False %}
+					<p>Unable to login: Please check your username or password</p>
+				{% endif%}
+				<button class="button login__submit" style="margin-bottom:10px;">
+					<span class="button__text">Log In Now</span>
+					<i class="button__icon fas fa-chevron-right"></i>
+				</button>
+				<a href = "/register" style = "text-decoration: none; color: #0f5e94">Register New User</a>
+			</form>
+			<div class="social-login" style = "margin-bottom: 50px;">
+				<h3>log in via</h3>
+				<div class="social-icons">
+					<a href="#" class="social-login__icon fab fa-instagram"></a>
+					<a href="#" class="social-login__icon fab fa-facebook"></a>
+					<a href="#" class="social-login__icon fab fa-twitter"></a>
+				</div>
+			</div>
+		</div>
+		<div class="screen__background">
+			<span class="screen__background__shape screen__background__shape4"></span>
+			<span class="screen__background__shape screen__background__shape3"></span>		
+			<span class="screen__background__shape screen__background__shape2"></span>
+			<span class="screen__background__shape screen__background__shape1"></span>
+		</div>
+		{% if messages %}
+		<div id="message-container" data-messages="{% for message in messages %}{{ message|escapejs }}{% if not forloop.last %}|{% endif %}{% endfor %}"></div>
+		{% endif%}
+	</div>
+</div>
+<!-- partial -->  
+</body>
+<script>
+	window.onload = function () {
+		var messageContainer = document.getElementById('message-container');
+		if (messageContainer) {
+			var messages = messageContainer.getAttribute('data-messages').split('|');
+				for (var i = 0; i < messages.length; i++) {
+					if(messages[i].length > 0){
+						alert(messages[i]);
+					}
+				}
+		}
+	};
+
+	function formCheck(){
+		var username = document.getElementById('un');
+		var password = document.getElementById('pw');
+		if(username.value == ""){
+			alert("Please enter a username.");
+			return false;
+		}
+		if(password.value == ""){
+			alert("Please enter your password.");
+			return false;
+		}
+	}
+
+</script>
+</html>

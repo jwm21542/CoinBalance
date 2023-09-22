@@ -1,0 +1,243 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Group Detail
+{% endblock %}
+
+
+{% block content %}
+  <div class="row" style = "margin-top: 30px;">
+    <div class="col-md-1"></div>
+    <div class="col-md-10" style = "height: max-content;">
+        <div class="card" style = "min-height: 500px; padding: 20px;">
+            <div class="card-header">
+              <h4 class="card-title">Group : {{group.gname}}</h4>
+            </div>
+      <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#home">Group Info</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#menu1">Expenses</a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#menu2">Balances</a>
+        </li>
+  </ul>
+  
+  <!-- Tab panes -->
+    <div class="tab-content" style = "margin:0 auto;">
+        <div class="tab-pane container active bg-light p-4" id="home" style = "margin:0 auto;">
+            <div class = "text-primary" style = "font-size: 20px; margin-bottom: 8px;">
+                <i class="fas fa-info-circle"></i> Description : {{group.gdesc}}
+            </div>
+            <div>
+                <i class="fas fa-users"></i> Members : 
+                {% for name in names %}
+                    {{name}} 
+                    {% if forloop.counter != names|length %}
+                    , 
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div>
+                <div class="card card-chart" style = "margin: 20px 0px;">
+                    <div class="card-header">
+                      <h5 class="card-category">Comparison</h5>
+                      <h4 class="card-title">Total Expenses vs Total Payments</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="barChartSimpleGradientsNumbers"></canvas>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+                    </div>
+                    </div>
+                  </div>
+                <i class="fas fa-dollar-sign"></i> Total Expenses : {{ totalExp }} ({{group.currency}})
+            </div>
+            
+            <a class = "btn btn-primary mt-3" href = "/createExpense/?gnum={{group.gnum}}" style = "background-color: #007bff; margin-top:30px;">Add New Expense</a>
+        </div>
+        <div class="tab-pane container fade bg-light p-4" id="menu1" style = "margin:0 auto;">
+            <div class="table-responsive">
+                <table class="table">
+                  <thead class="text-primary" style = "color: #007bff">
+                    <th>
+                      Expense Name
+                    </th>
+                    <th>
+                      Expense Description
+                    </th>
+                    <th>
+                      Expense Total ({{group.currency}})
+                    </th>
+                    <th>
+                      Paid By
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for expense in expenses %}                
+                    <tr>
+                      <td>
+                        <a href = "/expenseDetail/?enum={{expense.enum}}">{{ expense.ename}}</a>
+                      </td>
+                      <td>
+                        {{expense.edesc}}
+                      </td>
+                      <td>
+                        {{expense.expenseTotal}}
+                      </td>
+                      <td>
+                        {{expense.paidBy}}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <h5>Total Expense : {{totalExp}}</h5>
+              </div>
+        </div>
+        <div class="tab-pane container fade bg-light p-4" id="menu2" style = "height:max-content; margin:0 auto;">
+            <div>
+                <div class="card card-chart" style = "margin: 20px 0px;">
+                    <div class="card-header">
+                      <h4 class="card-title">Balances</h4>
+                      <h5 class="card-category">Negative(Red) Value Indicates Amount Owed. Positive(Blue) Value Indicates Payment To Be Received</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="chart-area">
+                        <canvas id="bidirectional-chart"></canvas>
+                      </div>
+                    </div>
+                    <div class="card-footer">
+                      <div class="stats">
+                        <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+                    </div>
+                    </div>
+                  </div>
+                
+                <div class="table-responsive">
+                  <h4>Payment History</h4>
+                <table class="table">
+                  <thead class="text-primary" style = "color: #007bff">
+                    <th>
+                      Paid By
+                    </th>
+                    <th>
+                      Paid To
+                    </th>
+                    <th>
+                      Payment Amount ({{group.currency}})
+                    </th>
+                    <th>
+                      Date of Payment
+                    </th>
+                  </thead>
+                  <tbody>
+                    {% for payment in paymentData %}                
+                    <tr>
+                      <td>
+                        {{payment.payer}}
+                      </td>
+                      <td>
+                        {{payment.receiver}}
+                      </td>
+                      <td>
+                        {{payment.amount}}
+                      </td>
+                      <td>
+                        {{payment.pdate}}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                <h5>Total Payment : {{totalPayment}}</h5>
+                <a class = "btn btn-primary mt-3" href = "/createPayment/?gnum={{group.gnum}}" style = "background-color: #007bff; margin-top:30px;">Record a Payment</a>
+              </div>
+            </div>
+        </div>
+    </div>
+        
+    </div>
+    </div>
+    </div>
+    <input type = "hidden" name = "totalExpense" value = "{{ totalExp }}">
+    <input type = "hidden" name = "currency" value = "{{group.currency}}">
+    <input type = "hidden" name = "totalPayment" value = "{{totalPay}}">
+    {% for r in receivers %}
+        <input type = "hidden" name = "name" value = "{{r.name}}">
+        <input type = "hidden" name = "value" value = "{{r.value}}">
+    {% endfor %}
+
+    {% for g in givers %}
+        <input type = "hidden" name = "name" value = "{{g.name}}">
+        <input type = "hidden" name = "value" value = "{{g.value}}">
+    {% endfor %} 
+{% endblock %}
+
+{% block scriptBlock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="../static/assets/demo/demo.js"></script>
+
+<script>
+    $(document).ready(function() {
+      $('li').removeClass('active');
+      $('#groups').addClass('active');
+      demo.initDashboardPageCharts();
+      var names = [];
+      var values = [];
+      var iowe = [];
+      $('input[name="name"]').each(function(){
+        names.push($(this).val());
+      });
+      $('input[name="value"]').each(function(){
+        values.push($(this).val());
+      });
+
+      const data = {
+      labels: names,
+      datasets: [{
+        data: values, // Negative values represent debts, positive values represent credits
+        backgroundColor: [], // Dynamically assigned background colors
+        borderColor: [],     // Dynamically assigned border colors
+        borderWidth: 1,
+        label: $('input[name=currency]').val(),
+      }],
+    };
+
+    // Dynamically assign colors based on data values
+    data.datasets[0].data.forEach(value => {
+      data.datasets[0].backgroundColor.push(value < 0 ? 'rgba(255, 99, 132, 0.6)' : 'rgba(75, 192, 192, 0.6)');
+      data.datasets[0].borderColor.push(value < 0 ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)');
+    });
+
+    const options = {
+        responsive: true, // Allow responsiveness
+        maintainAspectRatio: false, // Disable fixed aspect ratio
+        legend: {
+            display: false // Turn off the legend
+        },
+        scales: {
+            x: {
+                suggestedMin: -50,
+                suggestedMax: 50,
+            },
+      },
+    };
+
+    const ctx = document.getElementById('bidirectional-chart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'horizontalBar',
+      data: data,
+      options: options,
+    });
+});
+   
+</script>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Expense Detail
+{% endblock %}
+
+
+{% block content %}
+  <div class="row" style = "margin-top: 30px;">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div class="card" style = "min-height: 500px; padding: 30px;">
+        <div class="card-header">
+            <h4 class="card-title"><span class = "now-ui-icons business_money-coins"></span> &nbsp;Expense Detail : </h4>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{expense.ename}} : {{expense.edesc}} </h5>
+            <div class = "alert alert-info" style = "width: fit-content"><span>Expense Amount : {{expense.expenseTotal}} ({{group.currency}})</span></div>
+            <div class = "alert alert-info" style = "width: fit-content"><span>Paid By : {{expense.paidBy}}</span></div>
+            
+            <br>
+            <h5 class="card-title"><span class = "now-ui-icons users_single-02"></span>&nbsp;Bill Split Details: </h5>
+            {% for split in allSplit %}
+            <div class = "alert alert-danger" style = "width: fit-content"><span>{{split.mname}} owes {{split.owedtoname}} {{split.splitamount}} {{group.currency}} for this bill.</span></div>
+            
+            {% endfor %}
+
+            <br>
+            <h5 class = "card-title"><span class = "now-ui-icons ui-2_chat-round"> &nbsp;Comments :</span></h5>
+            <div class="container mt-5">
+                <div class="d-flex justify-content-center row">
+                    <div class="col-md-8 card-body">
+                        <div class="d-flex flex-column comment-section"  style = "box-shadow: 0 0 10px gray;">
+                            {% for c in comment %}
+                            <div class="bg-white p-2">
+                                <div class="d-flex flex-row user-info"><img class="rounded-circle" src="../../media/{{c.cpic}}" width="50">
+                                    <div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">{{c.author}}</span><span class="date text-black-50">{{c.cdate}}</span></div>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="comment-text">{{c.comment}}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="bg-light p-2" style = "border-top:1px solid gray;">
+                                <label>Leave a Comment : </label>
+                                <form action = "/addComment/" method = "post">
+                                            {% csrf_token %}
+                                <input type = "hidden" name = "enum" value = "{{expense.enum}}">
+                                <input type = "hidden" name = "commenter" value = "{{member.name}}">
+                                <input type = "hidden" name = "cpic" value = "{{member.image}}">
+                                <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="../../media/{{member.image}}" width="50">
+                                <textarea class="form-control ml-1 shadow-none textarea" name = "comment" style = "padding:5px; background-color: white;" autocomplete = "off"></textarea></div>
+                                <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    </div>
+{% endblock %}
+
+{% block scriptBlock %}
+<style>
+    body{background: #eee}.date{font-size: 11px}.comment-text{font-size: 12px}.fs-12{font-size: 12px}.shadow-none{box-shadow: none}.name{color: #007bff}.cursor:hover{color: blue}.cursor{cursor: pointer}.textarea{resize: none}
+
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(document).ready(function() {
+      $('li').removeClass('active');
+      $('#groups').addClass('active');
+    });
+</script>
+{% endblock %}

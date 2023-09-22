@@ -1,0 +1,247 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Edit Group
+{% endblock %}
+
+{% block content %}
+<div class="row" style = "margin-top: 30px;">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+<div class="card" style = "margin-top: 30px; padding: 50px;" >
+    <div class="card-header">
+      <h5 class="title">Edit Group</h5>
+    </div>
+    <div class="card-body">
+      <form action = "/saveEdit/" method = "post" onsubmit = "return formCheck()">
+        {% csrf_token %}
+        <input type = "hidden" value = "{{group.gnum}}" name = "gnum">
+        <div class="row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label>Group Name</label>
+              <input type="text" class="form-control" name = "gname" placeholder="Enter Group Name" autocomplete="off" value = "{{ group.gname}}">
+            </div>
+          </div>
+        </div>
+        <div class = "row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label>Group Description</label>
+              <textarea name = "gdesc" class="form-control" placeholder="Enter Group Description" rows="3" style = "border: 1px solid #E3E3E3; border-radius: 30px;" autocomplete="off">{{group.gdesc}}</textarea>
+            </div>
+          </div>
+        </div>
+        <div class = "row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Currency</label>
+              <select class = "form-control" autocomplete="off" name = "currency">
+                <option value = "">Select Currency</option>
+                <option value = "USD" {% if group.currency == 'USD'%} selected {% endif %}>USD</option>
+                <option value = "KRW" {% if group.currency == "KRW"%} selected {% endif %}>KRW</option>
+                <option value = "EUR" {% if group.currency == "EUR"%} selected {% endif %}>EUR</option>
+                <option value = "JPY" {% if group.currency == "JPY"%} selected {% endif %}>JPY</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class = "row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Category</label>
+              <select class = "form-control" autocomplete="off" name = "category">
+                <option value = "">Select Category</option>
+                <option value = "Trip" {% if group.category == "Trip"%} selected {% endif %}>Trip</option>
+                <option value = "Shared House" {% if group.category == "Shared House"%} selected {% endif %}>Shared House</option>
+                <option value = "Couple" {% if group.category == "Couple"%} selected {% endif %}>Couple</option>
+                <option value = "Event" {% if group.category == "Event"%} selected {% endif %}>Event</option>
+                <option value = "Project" {% if group.category == "Project"%} selected {% endif %}>Project</option>
+                <option value = "Other" {% if group.category == "Other"%} selected {% endif %}>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class = "row">
+          <div class="col-md-12 pl-1">
+            <div class="form-group">
+              <label for="exampleInputEmail1" style = "display:block;">Add Participants by Username</label>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style = "background-color:#007bff; color: white;">
+                Add Users
+              </button>
+              <p id = "usernameBlock">
+                <span style = "font-weight: bold; color : #007bff;">Users Added : </span>
+              </p>
+              <!-- Modal -->
+              <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Add Users</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick = "closeModal()">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- Add form elements here -->
+                      <input type="text" id="username-input" class="form-control" placeholder="Enter Username" style = "margin-bottom: 8px;">
+                      <ul id="username-suggestions"></ul>
+                      <ul id="username-chosen">
+                        <span style = "font-weight: bold; color : #007bff; margin-bottom: 10px;">Users To Be Added (Click X to remove added users)</span>
+                        
+                      </ul>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick = "closeModal()">Close</button>
+                      <button type="button" class="btn btn-primary" id="add-user-btn" data-dismiss="modal" onclick = "addUsers()">Add User(s)</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style = "text-align: right">
+        <button type = "submit" class = "btn btn-primary">Save Edits</button>
+      </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  </div>
+  {% endblock %}
+
+{% block scriptBlock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  var allUsernames = [];
+
+  function formCheck() {
+    if($("input[name='gname']").val() == ""){
+      alert("Please enter a group name.");
+      return false;
+    }
+    if($("textarea[name='gdesc']").val() == ""){
+      alert("Please enter a group description.");
+      return false;
+    }
+    if($("select[name='currency']").val() == ""){
+      alert("Please select a type of currency.");
+      return false;
+    }
+   
+    var usernameList = $('input[name = "username"]');
+    if(usernameList.length == 1){
+      alert("Please select at least one user to add to your group");
+      return false;
+    }
+  }
+  function closeModal(){
+    $('#username-suggestions').empty();
+    var input = document.getElementById("username-input");
+    input.value = "";
+  }
+  
+  function addUsers(){
+    var selectedUsers = $(".chosenUser").map(function() {
+      return this.id;
+    }).get();
+    for(i = 0; i < selectedUsers.length; i++){
+      $('#usernameBlock').append("<input type = 'text' class = 'form-control usersAdded' readonly name = 'username[]' value = '" + selectedUsers[i] + "'>");
+    }
+    
+  }
+
+  function addUsername(data){
+    $('#username-suggestions').empty();
+    var username = data;
+    var input = document.getElementById("username-input");
+    input.value = "";
+    var index = allUsernames.indexOf(username);
+    if (index > -1) { // only splice array when item is found
+      allUsernames.splice(index, 1); // 2nd parameter means remove one item only
+    }
+    $('#username-chosen').append("<p class='chosenUser' id='" + username + "'>Username : " + username + "<span style='color: red;' onclick=\"removeUser('" + username + "')\">&nbsp;X</span></p>");
+  }
+  
+  function removeUser(data){
+    var username = data;
+    $('#' + username).remove();
+    var index = allUsernames.indexOf(username);
+    if (index == -1) { // only add to array when item is not found
+      allUsernames.push(username); 
+    }
+    var input = $('.usersAdded').each(function(){
+      if($(this).val() == username){
+        $(this).remove();
+      }
+    });
+  }
+  $(document).ready(function() {
+    $('li').removeClass('active');
+    $('#groups').addClass('active');
+    var selectedUsers = JSON.parse('{{ groupMembers|safe }}');
+
+    // Make an AJAX request to retrieve all usernames
+    $.ajax({
+        url: '/get_all_usernames/',  // Replace with your server-side endpoint URL
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            var allUsernames = data.usernames;
+            
+            for (var i = 0; i < selectedUsers.length; i++) {
+                var username = selectedUsers[i];
+                console.log("Username: " + username);
+                var index = allUsernames.indexOf(username);
+                if (index > -1) {
+                    allUsernames.splice(index, 1);
+                }
+                $('#usernameBlock').append("<input class = 'form-control usersAdded' type = 'text' disabled value = " + username + ">");
+            }
+            
+            // Continue with your code
+        
+        
+        // Initialize autocomplete with custom filtering
+        $("#username-input").autocomplete({
+          source: function(request, response) {
+            var term = request.term.toLowerCase();
+            var filteredUsernames = $.grep(allUsernames, function(username) {
+              return username.toLowerCase().includes(term);
+            });
+            response(filteredUsernames);
+          },
+          select: function(event, ui) {
+            // Handle the selected username
+          }
+        });
+
+        // Update suggestions as the user types
+        $("#username-input").on("input", function() {
+          var term = $(this).val().toLowerCase();
+          var matchingUsernames = $.grep(allUsernames, function(username) {
+            return username.toLowerCase().includes(term);
+          });
+          displaySuggestions(matchingUsernames);
+        });
+
+        // Display suggestions
+        function displaySuggestions(usernames) {
+          var suggestionsList = $("#username-suggestions");
+          suggestionsList.empty();
+          if($('#username-input').val() != ""){
+            $.each(usernames, function(index, username) {
+              suggestionsList.append($("<li id='usernames' onclick=\"addUsername('" + username + "')\"></li>").text(username));            
+            });
+          }
+        }
+      },
+      error: function() {
+        console.log("Error fetching usernames.");
+      }
+    });
+  });
+</script>
+{% endblock %}

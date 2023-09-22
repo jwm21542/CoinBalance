@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CoinBalance | Register</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="../static/assets/js/core/popper.min.js"></script>
+  <script src="../static/assets/js/core/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
+<link type="text/css" rel = "stylesheet" href='https://use.fontawesome.com/releases/v5.2.0/css/all.css'>
+<link type="text/css" rel = "stylesheet" href='https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css'>
+<link type="text/css" rel = "stylesheet" href = "../static/assets/css/style.css">
+<link rel="icon" type="image/png" href="../static/assets/img/favicon.png">
+<style>
+    /* Style the button-like div */
+    .button-like {
+      display: inline-block;
+      padding: 10px 20px; /* Adjust padding as needed */
+      background-color: #007BFF; /* Button background color */
+      color: #fff; /* Text color */
+      border: none;
+      border-radius: 5px; /* Rounded corners */
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      font-size: 12px; /* Adjust font size */
+      height: 30px;
+      margin-bottom:8px;
+    }
+
+    /* Style when hovering over the button */
+    .button-like:hover {
+      background-color: #0056b3; /* Hover color */
+    }
+  </style>
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container col-lg-12" style = "height: 100%; align-content: center;">
+	<div class="screen" style = "height: 850px; width: 450px;">
+		<div class="screen__content" style = "background-color: white; padding-left: 65px; padding-top: 35px;">
+			<form method="post" enctype="multipart/form-data" action = "/completeReg/" onsubmit = "return pwCheck()" id = "registration-form">
+                {% csrf_token %}
+                <p style = "margin-top: 20px; font-size:28px; font-weight: bold; display:inline; color:#0f5e94">Register New User</p>
+				<div class="login__field">
+					<i class="login__icon fas fa-user"></i>
+                    {{ form.username }}
+                    <div class="button-like" style = "margin-top: 6px;" id = "check-username-button">Check Valid Username</div>
+                    <p id="username-error"></p>
+				</div>
+				<div class="login__field">
+					<i class="login__icon fas fa-lock"></i>
+                    {{ form.password }}
+                </div>
+                <div class="login__field">
+					<i class="login__icon fas fa-lock"></i>
+                    {{ form.password2 }}
+				</div>
+                <div class="login__field">
+					<i class="login__icon fas fa-envelope"></i>
+                    {{ form.email }}
+                </div>
+                <div class="login__field">
+					<i class="login__icon fas fa-user-tie"></i>
+                    {{ form.name }}
+				</div>
+                <p style = "color:#0f5e94; font-size: 12px;">Date of Birth</p>
+                <div class="login__field">
+					<i class="login__icon fas fa-calendar"></i>
+                    {{ form.dob }}
+                </div>
+                <p style = "color:#0f5e94; font-size: 12px;">Profile Picture</p>
+                <div class="login__field">
+                    {{ form.image }}
+                </div>
+				<button class="button login__submit" style = "width: 310px;">
+					<span class="button__text">Complete Registration</span>
+					<i class="button__icon fas fa-chevron-right"></i>
+				</button>
+			</form>
+		</div>
+		
+	</div>
+</div>
+<!-- partial -->  
+</body>
+<script>
+    $(document).ready(function() {
+      var checkResult = false;
+      var userCheck = false;
+      function usernameCheck() {
+        var username = $('#un').val(); // Replace 'id_username' with the actual field ID
+        userCheck = true;
+        if (username === "") {
+          alert("Please enter a username");
+          return;
+        }
+        var csrftoken = Cookies.get('csrftoken');
+        $.ajax({
+          url: '/usernameCheck/',  // Replace with your server-side endpoint URL
+          method: 'POST',
+          dataType: 'json',
+          data: {
+            'username': username
+          },
+          headers: {
+            'X-CSRFToken': csrftoken // Include the CSRF token in the headers
+          },
+          success: function(data) {
+            if (data.result === 'False') {
+              checkResult = false; // username is not usable
+              $('#username-error').empty();
+              $('#username-error').append('<span style = "color:red">Username is already taken.</span>');
+            } else {
+              checkResult = true; // username is usable
+              $('#username-error').empty();
+              $('#username-error').append('<span style = "color:green">Username is usable.</span>');
+              // If the username is valid, you can submit the forms
+            }
+          },
+          error: function() {
+            console.log('Error checking username.');
+          }
+        });
+      }
+      
+    
+        // Attach the usernameCheck function to the "Check Username" button click event
+        $('#check-username-button').click(usernameCheck);
+        $('#un').keyup(function(){
+            checkResult = false;
+            userCheck = false;
+            $('#username-error').empty();
+        });
+    });
+        function pwCheck(){
+            var username = document.getElementById('un');
+            var password = document.getElementById('pw');
+            var password2 = document.getElementById('pw2');
+            if(username.value == ""){
+                alert("Please enter a username.");
+                return false;
+            }
+            if(password.value == ""){
+                alert("Please enter your password.");
+                return false;
+            }
+            if(password2.value == ""){
+                alert("Please verify your password.");
+                return false;
+            }
+            if(password.value != password2.value){
+                alert("The passwords do not match.");
+                password2.focus();
+                return false;
+            }
+            if(userCheck == false){
+                alert("Please check if your username is valid.");
+                return false;
+            }
+            if(checkResult == false){
+                alert("Your username is already taken.");
+                return false;
+            }
+        }
+    </script>
+</html>

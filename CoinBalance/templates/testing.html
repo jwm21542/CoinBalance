@@ -1,0 +1,134 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row" style = "justify-content: space-evenly;">
+  <div class = "col-lg-12"><h3 style = "text-align: center; margin-top:30px; font-weight: bold;">Account Summary</h3></div>
+  <div class="col-lg-3">
+    <div class = "card card-chart card-container" style = "display:flex; justify-content: center; flex-direction: column; align-items: center; padding: 0px; padding-bottom: 30px;">
+    <img src = "../static/assets/img/payment.jpg">
+    <h4 style = "margin-top: 15px; color:#007bff">Total Payments Recorded</h4>
+    <div class="number-container" style = "text-align: center;">
+      {{paymentTotal}}
+    </div>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class = "card card-chart card-container" style = "display:flex; justify-content: center; flex-direction: column; align-items: center; padding: 0px; padding-bottom: 30px;">
+    <img src = "../static/assets/img/expenses.jpg">
+    <h4 style = "margin-top: 15px; color:#007bff"># of Expenses Recorded</h4>
+    <div class="number-container">
+      {{expenseTotal}}
+    </div>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class = "card card-chart card-container" style = "display:flex; justify-content: center; flex-direction: column; align-items: center; padding: 0px; padding-bottom: 30px;">
+      <img src = "../static/assets/img/group.jpeg">
+      <h4 style = "margin-top: 15px; color:#007bff"># of Groups You're In</h4>
+    <div class="number-container">
+      {{groupCount}}
+    </div>
+    </div>
+  </div>
+  <div class = "col-lg-12" style = "text-align: center;">
+    <a class = "btn" href = "/groups/" style = "background-color: #007bff; margin-top:30px; padding: 10px;">View Your Groups</a>
+  </div>
+</div>
+<br>
+<div class = "col-lg-12"><h3 style = "text-align: center; margin-top:30px; font-weight: bold;">Categorize Your Groups</h3></div>
+<div class="row" style = "display:flex; justify-content: space-evenly;">
+  <div class="col-lg-3">
+    <div class = "card card-chart">
+      <img src = "../static/assets/img/usecase-couple.jpg">
+      <h4 class = "card-title" style = "text-align: center; color:#007bff">For Couples</h4>
+      <p class = "card-body">Keep your relationship fair and financially transparent. Track common expenses with your partner and split them evenly through Tricount.</p>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class = "card card-chart">  
+      <img src = "../static/assets/img/usecase-holiday.jpg">
+      <h4 class = "card-title" style = "text-align: center; color:#007bff">For Travelers</h4>
+      <p class = "card-body">Whether you're on an exciting family getaway or a spontaneous city trip with friends, Tricount does the calculations so you can relax and enjoy your travels.</p>
+    </div>
+  </div>
+  <div class="col-lg-3">
+    <div class = "card card-chart">
+      <img src = "../static/assets/img/usecase-shared-house.jpg">
+      <h4 class = "card-title" style = "text-align: center; color:#007bff">For Roommates</h4>
+      <p class = "card-body">Tricount splits household bills and daily expenses between roommates to make living together easy, honest and fair.</p>
+    </div>
+  </div>
+</div>
+<div class = "row">
+  <div class = "col-lg-12" style = "text-align: center;">
+    <a class = "btn" href = "/createGroup/" style = "background-color: #007bff; margin-top:30px; padding: 10px;">Create New Group</a>
+  </div>
+</div>
+
+<div class = "col-lg-12"><h3 style = "text-align: center; margin-top:30px; font-weight: bold;">View, Download All Your Expenses</h3></div>
+<div class="row" style = "display:flex; justify-content: space-evenly;">
+  <div class="col-lg-6">
+    <div class = "card card-chart">
+      <img src = "../static/assets/img/expenseList.png">
+      <h4 class = "card-title" style = "text-align: center; color:#007bff">Export Your CoinBalance</h4>
+      <p class = "card-body">You may prefer deeper analysis of all of your expenses. We offer a choice to download info on all of your expenses as a CSV file.</p>
+    </div>
+  </div>
+</div>
+<div class = "row">
+  <div class = "col-lg-12" style = "text-align: center;">
+    <a class = "btn" href = "/viewExpense/" style = "background-color: #007bff; margin-top:30px; padding: 10px;">View All Expenses</a>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block scriptBlock %}
+<script>
+  $(document).ready(function(){
+    $('li').removeClass('active');
+    $('#dashboard').addClass('active');
+  });
+
+</script>
+<style>
+  .number-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px; /* Adjust width as needed */
+      height: 100px; /* Adjust height as needed */
+      background-color: #007bff; /* Background color */
+      color: white; /* Text color */
+      font-size: 24px; /* Font size */
+      font-weight: bold; /* Font weight */
+      border-radius: 50%; /* Make it circular */
+  }
+  .card-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 0px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+  }
+
+  /* Style for headings */
+  h4 {
+    margin-top: 15px;
+    color: #007bff;
+  }
+
+  /* Style for the number container */
+  .number-container {
+    text-align: center;
+  }
+</style>
+{% endblock %}

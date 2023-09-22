@@ -1,0 +1,51 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Dashboard
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row" style = "justify-content: space-evenly;">
+  <div class = "col-lg-12"><h3 style = "text-align: center; margin-top:30px; font-weight: bold;">About CoinBalance</h3></div>
+  <div class="col-lg-7">
+    <div class = "card card-chart" style = "padding: 30px 8px;">
+        <div class="number-container" style = "display:flex; flex-direction: column; justify-content: space-evenly;">
+        <img src = "../static/assets/img/aboutUS.png" style = "width:70%; align-self: center;">
+        <h4 class = "card-title" style = "text-align: center; color:#007bff">About CoinBalance</h4>
+        <p class = "card-body">Welcome to CoinBalance, your trusted companion for simplified expense tracking and group settlements.
+        <br><br>At CoinBalance, we understand that managing shared expenses can be a hassle, whether it's with friends, family, or colleagues. That's why we've created a user-friendly web application that takes the complexity out of splitting bills and keeps your financial transactions in perfect harmony.
+        <br><br>Our mission is to provide a seamless platform where you can effortlessly log payments and expenses, and let CoinBalance do the heavy lifting when it comes to calculating who owes what. No more spreadsheet headaches or awkward conversations about settling debts—CoinBalance has you covered.
+        <br><br><b>Key Features:</b>
+        <ul>
+            <li><b>Effortless Expense Tracking: </b>Record payments and expenses with ease, and let CoinBalance handle the calculations.</li>
+            <li><b>Real-time Balance Updates: </b>Stay up-to-date with who owes you and who you owe, ensuring financial transparency within your groups.</li>
+            <li><b>Multiple Currencies: </b>Whether you're traveling with friends or working on international projects, CoinBalance supports various currencies.</li>
+            <li><b>User-Friendly Interface: </b>Our intuitive design makes it simple for anyone to navigate and manage their financial transactions.</li>
+            <li><b>Secure and Private: </b>We take your privacy seriously. Your data is protected with robust security measures.</li>
+
+        </ul>
+        <br><br>Join the CoinBalance community today and simplify the way you split bills and track expenses. Say goodbye to financial confusion and hello to effortless group settlements.
+        <br><br>Start your journey to financial clarity with CoinBalance. Your perfect financial balance, simplified.</p>
+        </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class = "card card-chart" style = "display:flex; justify-content: center; flex-direction: column; align-items: center; padding: 0px;">
+    <img src = "../static/assets/img/billSplit.jpg">
+    </div>
+  </div> 
+</div>
+{% endblock %}
+
+
+{% block scriptBlock %}
+<script>
+  $(document).ready(function(){
+    $('li').removeClass('active');
+    $('#aboutus').addClass('active');
+  });
+
+</script>
+
+{% endblock %}

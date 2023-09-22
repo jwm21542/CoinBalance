@@ -1,0 +1,75 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Groups
+{% endblock %}
+
+
+{% block content %}
+  <a class = "btn" href = "/createGroup/" style = "background-color: #007bff; margin-top:30px;">Create New Group</a>
+  <div class="row" style = "margin-top: 30px;">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div class="card" style = "min-height: 500px;">
+        <div class="card-header">
+          <h4 class="card-title">My Groups</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class="text-primary" style = "color: #007bff">
+                <th>
+                  Group Name
+                </th>
+                <th>
+                  Group Description
+                </th>
+                <th>
+                  Currency
+                </th>
+                <th>
+                  Category
+                </th>
+                <th class="text-right">
+                  Edit Group Settings
+                </th>
+              </thead>
+              <tbody>
+                {% for group in groupList %}                
+                <tr>
+                  <td>
+                    <a href = "/groupDetail/?gnum={{group.gnum}}">{{ group.gname}}</a>
+                  </td>
+                  <td>
+                    {{group.gdesc}}
+                  </td>
+                  <td>
+                    {{group.currency}}
+                  </td>
+                  <td>
+                    {{group.category}}
+                  </td>
+                  <td class = "text-right">
+                    <a href = "/editGroup/?gnum={{group.gnum}}">Edit</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+{% endblock %}
+
+{% block scriptBlock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(document).ready(function() {
+      $('li').removeClass('active');
+      $('#groups').addClass('active');
+    });
+</script>
+{% endblock %}

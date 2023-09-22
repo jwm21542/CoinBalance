@@ -1,0 +1,155 @@
+{% extends "master.html" %}
+{% block title %}
+    CoinBalance | Dashboard
+{% endblock %}
+
+
+{% block content %}
+<div class="content">
+    <div class="row" style = "margin-top: 20px;">
+      <div class="col-md-8">
+        <div class="card" style = "padding:20px;">
+          <div class="card-header">
+            <h5 class="title">Edit Profile</h5>
+          </div>
+          <div class="card-body">
+            <form action = "/saveSettings/" method = "POST" onsubmit = "return formCheck()">
+                {% csrf_token %}
+                <input type = "hidden" name = "mnum" value = "{{member.mnum}}">
+              <div class="row">
+                <div class="col-md-3 px-1">
+                  <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name = "username" class="form-control" placeholder="Username" value="{{member.username}}" autocomplete = "off">
+                  </div>
+                </div>
+                <div class="col-md-4 pl-1">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" name = "email" placeholder="Email Address" value = "{{member.email}}" autocomplete = "off">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 pr-1">
+                  <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name = "name" placeholder="Name" value="{{member.name}}" autocomplete = "off">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name = "password" placeholder="Password" value="{{member.password}}" id = "pw" readonly = "true" autocomplete = "off">
+                    <a href = "#" class = "btn btn-primary" onclick = "changePassword()">Change Password</a>
+                  </div>
+                </div>
+              </div>
+              <div class="row" id = "verifypw" style = "display:none;">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label>Verify Password</label>
+                    <input type="password" class="form-control" id = "pw2" placeholder=" Verify Your Password">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 pr-1">
+                  <div class="form-group">
+                    <label>Date Of Birth</label>
+                    <input type="text" class="form-control" placeholder="Enter your Date of Birth" name = "dob" value="{{member.dob}}">
+                  </div>
+                </div>
+              </div>
+              <div style = "text-align: right">
+                <button type = "submit" class = "btn btn-primary">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card card-user">
+          <div class="image" style = "height:fit-content">
+            <img src="../../media/{{member.image}}" alt="...">
+          </div>
+          <div class="card-body">
+            <div class="author" style = "margin: 0px;">
+              <a href="#">
+                <h5 class="title">{{member.name}}</h5>
+              </a>
+              <p class="description">
+                {{member.username}}
+              </p>
+            </div>
+            <p class="description text-center">
+              <form action = "/changePicture/" method = "post" enctype="multipart/form-data" style = "text-align: center;">
+                {% csrf_token %}
+                
+                {{form.mnum}}
+                <label>Change Profile Picture</label>
+
+                {{form.image}}
+                <div style = "text-align: center">
+                    <button type = "submit" class = "btn btn-primary">Apply Changes</button>
+                </div>
+              </form>
+            </p>
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scriptBlock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    var changePW = false;
+    $(document).ready(function() {
+      $('li').removeClass('active');
+      $('#settings').addClass('active');
+    });
+    function changePassword() {
+        $('#pw').attr("readonly", false);
+        $('#verifypw').css("display", "");
+        changePW = true;
+    }
+    function formCheck() {
+        if($('input[name=name]').val() == "") {
+            alert("Please enter your name");
+            return false;
+        }
+        if($('input[name=username]').val() == ""){
+            alert("Please enter your username");
+            return false;
+        }
+        if($('input[name=dob]').val() == ""){
+            alert("Please enter your date of birth");
+            return false;
+        }
+        if($('input[name=email]').val() == ""){
+            alert("Please enter your email");
+            return false;
+        }
+        if(changePW == true){
+            if($('input[name=password]').val() == ""){
+                alert("Please enter your password");
+                return false;
+            }
+            if($('#pw2').val() == ""){
+                alert("Please verify your password");
+                return false;
+            }
+            if($('input[name=password]').val() != $('#pw2').val()){
+                alert("Your passwords do not match.");
+                return false;
+            }
+        }
+    }
+</script>
+{% endblock %}
